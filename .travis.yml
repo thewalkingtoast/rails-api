@@ -7,33 +7,15 @@ before_install:
   - gem install bundler
 
 rvm:
-  - 1.9.3
-  - 2.0.0
-  - 2.1
   - 2.2.2
   - ruby-head
   - jruby
   - rbx-2
 
-gemfile:
-  - Gemfile
-  - Gemfile.3-2
-  - Gemfile.4-0
-  - Gemfile.4-1
-  - Gemfile.4-2
-
 matrix:
-  exclude:
-    - rvm: 1.9.3
-      gemfile: Gemfile
-    - rvm: 2.0.0
-      gemfile: Gemfile
-    - rvm: 2.1
-      gemfile: Gemfile
+  allow_failures:
     - rvm: jruby
-      gemfile: Gemfile
     - rvm: rbx-2
-      gemfile: Gemfile
 
 notifications:
   email: false

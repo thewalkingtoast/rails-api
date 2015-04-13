@@ -25,8 +25,8 @@ Gem::Specification.new do |gem|
   gem.bindir        = 'bin'
   gem.executables   = ['rails-api']
 
-  gem.add_runtime_dependency 'actionpack', '>= 3.2.11'
-  gem.add_runtime_dependency 'railties', '>= 3.2.11'
+  gem.add_runtime_dependency 'actionpack', '>= 5.0.0.alpha'
+  gem.add_runtime_dependency 'railties', '>= 5.0.0.alpha'
 
-  gem.add_development_dependency 'rails', '>= 3.2.11'
+  gem.add_development_dependency 'rails', '>= 5.0.0.alpha'
 end

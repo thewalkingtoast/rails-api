@@ -1,31 +1,21 @@
 module Rails
   class Application
-    class DefaultRailsFourMiddlewareStack
-      attr_reader :config, :paths, :app
-
-      def initialize(app, config, paths)
-        @app = app
-        @config = config
-        @paths = paths
-      end
-
+    class DefaultMiddlewareStack
       def build_stack
         ActionDispatch::MiddlewareStack.new.tap do |middleware|
-          if rack_cache = load_rack_cache
-            require "action_dispatch/http/rack_cache"
-            middleware.use ::Rack::Cache, rack_cache
-          end
-
           if config.force_ssl
             middleware.use ::ActionDispatch::SSL, config.ssl_options
           end
 
-          if config.action_dispatch.x_sendfile_header.present?
-            middleware.use ::Rack::Sendfile, config.action_dispatch.x_sendfile_header
+          middleware.use ::Rack::Sendfile, config.action_dispatch.x_sendfile_header
+
+          if config.serve_static_files
+            middleware.use ::ActionDispatch::Static, paths["public"].first, config.static_cache_control
           end
 
-          if serve_static_files?
-            middleware.use ::ActionDispatch::Static, paths["public"].first, config.static_cache_control
+          if rack_cache = load_rack_cache
+            require "action_dispatch/http/rack_cache"
+            middleware.use ::Rack::Cache, rack_cache
           end
 
           middleware.use ::Rack::Lock unless allow_concurrency?
@@ -63,49 +53,8 @@ module Rails
 
       private
 
-        # `config.serve_static_assets` will be removed in Rails 5.0, and throws
-        # a deprecation warning in Rails >= 4.2. The new option is
-        # `config.serve_static_files`.
-        def serve_static_files?
-          if config.respond_to?(:serve_static_files)
-            config.serve_static_files
-          else
-            config.serve_static_assets
-          end
-        end
-
-        def reload_dependencies?
-          config.reload_classes_only_on_change != true || app.reloaders.map(&:updated?).any?
-        end
-
-        def allow_concurrency?
-          config.allow_concurrency.nil? ? config.cache_classes : config.allow_concurrency
-        end
-
-        def load_rack_cache
-          rack_cache = config.action_dispatch.rack_cache
-          return unless rack_cache
-
-          begin
-            require 'rack/cache'
-          rescue LoadError => error
-            error.message << ' Be sure to add rack-cache to your Gemfile'
-            raise
-          end
-
-          if rack_cache == true
-            {
-              metastore: "rails:/",
-              entitystore: "rails:/",
-              verbose: false
-            }
-          else
-            rack_cache
-          end
-        end
-
         def show_exceptions_app
-          config.exceptions_app || ActionDispatch::PublicExceptions.new(Rails.public_path)
+          config.exceptions_app || Rails::API::PublicExceptions.new(Rails.public_path)
         end
     end
   end

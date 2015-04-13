@@ -145,34 +145,18 @@ module ActionController
       Instrumentation
     ].freeze
 
-    if Rails::VERSION::MAJOR == 5 || (Rails::VERSION::MAJOR == 4 && Rails::VERSION::MINOR > 0)
-      include AbstractController::Rendering
-      include ActionView::Rendering
-    end
-
-    if Rails::VERSION::MAJOR < 5
-      include ActionController::HideActions
-    end
+    include AbstractController::Rendering
+    include ActionView::Rendering
 
     MODULES.each do |mod|
       include mod
     end
 
-    DEFAULT_PROTECTED_INSTANCE_VARIABLES = begin
-      if Rails::VERSION::MAJOR == 5 || (Rails::VERSION::MAJOR == 4 && Rails::VERSION::MINOR > 0)
-        Set
-      else
-        Array
-      end
-    end.new
-
     def self.protected_instance_variables
-      DEFAULT_PROTECTED_INSTANCE_VARIABLES
+      Set.new
     end
 
-    if Rails::VERSION::MAJOR >= 4
-      include StrongParameters
-    end
+    include StrongParameters
 
     ActiveSupport.run_load_hooks(:action_controller, self)
   end

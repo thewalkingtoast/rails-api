@@ -45,20 +45,12 @@ class AppGeneratorTest < Rails::Generators::TestCase
       lib/assets
       log
       test/fixtures
-      test/#{generated_test_functional_dir}
+      test/controllers
       test/integration
-      test/#{generated_test_unit_dir}
+      test/models
     )
-    files.concat rails3? ? default_files_rails3 : default_files_rails
+    files.concat %w(bin/bundle bin/rails bin/rake)
     files
-  end
-
-  def default_files_rails3
-    %w(script/rails)
-  end
-
-  def default_files_rails
-    %w(bin/bundle bin/rails bin/rake)
   end
 
   def skipped_files

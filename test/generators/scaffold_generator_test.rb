@@ -12,20 +12,12 @@ class ScaffoldGeneratorTest < Rails::Generators::TestCase
 
     # Model
     assert_file "app/models/product_line.rb", /class ProductLine < ActiveRecord::Base/
-    assert_file "test/#{generated_test_unit_dir}/product_line_test.rb", /class ProductLineTest < ActiveSupport::TestCase/
+    assert_file "test/models/product_line_test.rb", /class ProductLineTest < ActiveSupport::TestCase/
     assert_file "test/fixtures/product_lines.yml"
 
-    if rails3?
-      assert_migration "db/migrate/create_product_lines.rb",
-        /belongs_to :product/,
-        /add_index :product_lines, :product_id/,
-        /references :user/,
-        /add_index :product_lines, :user_id/
-    else
-      assert_migration "db/migrate/create_product_lines.rb",
-        /belongs_to :product, index: true/,
-        /references :user, index: true/
-    end
+    assert_migration "db/migrate/create_product_lines.rb",
+      /belongs_to :product, index: true/,
+      /references :user, index: true/
 
     # Route
     assert_file "config/routes.rb" do |content|
@@ -56,12 +48,7 @@ class ScaffoldGeneratorTest < Rails::Generators::TestCase
       end
 
       assert_instance_method :update, content do |m|
-        assert_match(/@product_line = ProductLine\.find\(params\[:id\]\)/, m)
-        if rails3?
-          assert_match(/@product_line\.update_attributes\(params\[:product_line\]\)/, m)
-        else
-          assert_match(/@product_line\.update\(product_line_params\)/, m)
-        end
+        assert_match(/@product_line\.update\(product_line_params\)/, m)
         assert_match(/@product_line\.errors/, m)
       end
 
@@ -69,26 +56,19 @@ class ScaffoldGeneratorTest < Rails::Generators::TestCase
         assert_match(/@product_line\.destroy/, m)
       end
 
-      unless rails3?
-        assert_instance_method :set_product_line, content do |m|
-          assert_match(/@product_line = ProductLine\.find\(params\[:id\]\)/, m)
-        end
+      assert_instance_method :set_product_line, content do |m|
+        assert_match(/@product_line = ProductLine\.find\(params\[:id\]\)/, m)
+      end
 
-        assert_instance_method :product_line_params, content do |m|
-          assert_match(/params\.require\(:product_line\)\.permit\(:title, :product_id, :user_id\)/, m)
-        end
+      assert_instance_method :product_line_params, content do |m|
+        assert_match(/params\.require\(:product_line\)\.permit\(:title, :product_id, :user_id\)/, m)
       end
     end
 
-    assert_file "test/#{generated_test_functional_dir}/product_lines_controller_test.rb" do |test|
+    assert_file "test/controllers/product_lines_controller_test.rb" do |test|
       assert_match(/class ProductLinesControllerTest < ActionController::TestCase/, test)
-      if rails3?
-        assert_match(/post :create, product_line: \{ title: @product_line.title \}/, test)
-        assert_match(/put :update, id: @product_line, product_line: \{ title: @product_line.title \}/, test)
-      else
-        assert_match(/post :create, product_line: \{ product_id: @product_line.product_id, title: @product_line.title, user_id: @product_line.user_id \}/, test)
-        assert_match(/put :update, id: @product_line, product_line: \{ product_id: @product_line.product_id, title: @product_line.title, user_id: @product_line.user_id \}/, test)
-      end
+      assert_match(/post :create, params: \{ product_line: \{ product_id: @product_line.product_id, title: @product_line.title, user_id: @product_line.user_id \} \}/, test)
+      assert_match(/patch :update, params: \{ id: @product_line, product_line: \{ product_id: @product_line.product_id, title: @product_line.title, user_id: @product_line.user_id \} \}/, test)
       assert_no_match(/assert_redirected_to/, test)
     end
 
@@ -100,7 +80,7 @@ class ScaffoldGeneratorTest < Rails::Generators::TestCase
 
     # Helpers
     assert_no_file "app/helpers/product_lines_helper.rb"
-    assert_no_file "test/#{generated_test_unit_dir}/helpers/product_lines_helper_test.rb"
+    assert_no_file "test/helpers/product_lines_helper_test.rb"
 
     # Assets
     assert_no_file "app/assets/stylesheets/scaffold.css"

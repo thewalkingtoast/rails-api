@@ -24,14 +24,6 @@ module GeneratorsTestHelper
     FileUtils.cp routes, destination
   end
 
-  def generated_test_unit_dir
-    rails3? ? 'unit' : 'models'
-  end
-
-  def generated_test_functional_dir
-    rails3? ? 'functional' : 'controllers'
-  end
-
   def remove_destination
     rm_rf destination_root
   end
