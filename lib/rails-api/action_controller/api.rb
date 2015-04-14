@@ -123,12 +123,15 @@ module ActionController
     end
 
     MODULES = [
+      AbstractController::Rendering,
+
       UrlFor,
       Redirecting,
       Rendering,
       Renderers::All,
       ConditionalGet,
       RackDelegation,
+      StrongParameters,
 
       ForceSSL,
       DataStreaming,
@@ -145,18 +148,11 @@ module ActionController
       Instrumentation
     ].freeze
 
-    include AbstractController::Rendering
     include ActionView::Rendering
 
     MODULES.each do |mod|
       include mod
     end
-
-    def self.protected_instance_variables
-      Set.new
-    end
-
-    include StrongParameters
 
     ActiveSupport.run_load_hooks(:action_controller, self)
   end
