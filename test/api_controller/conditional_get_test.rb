@@ -3,7 +3,7 @@ require 'active_support/core_ext/integer/time'
 require 'active_support/core_ext/numeric/time'
 
 class ConditionalGetApiController < ActionController::API
-  before_filter :handle_last_modified_and_etags, :only => :two
+  before_action :handle_last_modified_and_etags, :only => :two
 
   def one
     if stale?(:last_modified => Time.now.utc.beginning_of_day, :etag => [:foo, 123])
