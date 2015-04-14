@@ -127,6 +127,7 @@ module ActionController
 
       UrlFor,
       Redirecting,
+      ApiRendering,
       Rendering,
       Renderers::All,
       ConditionalGet,
@@ -147,8 +148,6 @@ module ActionController
       # all the methods properly.
       Instrumentation
     ].freeze
-
-    include ActionView::Rendering
 
     MODULES.each do |mod|
       include mod
