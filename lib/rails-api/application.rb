@@ -1,11 +1,11 @@
 require 'rails/application'
 require 'rails-api/public_exceptions'
-require 'rails-api/application/default_middleware_stack'
+require 'rails-api/application/api_middleware_stack'
 
 module Rails
   class Application < Engine
     def default_middleware_stack
-      DefaultMiddlewareStack.new(self, config, paths).build_stack
+      ApiMiddlewareStack.new(self, config, paths).build_stack
     end
 
     private

@@ -1,6 +1,6 @@
 module Rails
   class Application
-    class DefaultMiddlewareStack
+    class ApiMiddlewareStack < DefaultMiddlewareStack
       def build_stack
         ActionDispatch::MiddlewareStack.new.tap do |middleware|
           if config.force_ssl
