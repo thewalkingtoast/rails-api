@@ -128,7 +128,6 @@ module ActionController
       UrlFor,
       Redirecting,
       ApiRendering,
-      Rendering,
       Renderers::All,
       ConditionalGet,
       RackDelegation,
