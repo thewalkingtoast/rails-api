@@ -15,8 +15,6 @@ end
 class ApiApplicationTest < ActiveSupport::TestCase
   include ::Rack::Test::Methods
 
-  app.initialize!
-
   def test_boot_api_app
     get "/omg"
     assert_equal "OMG", last_response.body
@@ -28,6 +26,8 @@ class ApiApplicationTest < ActiveSupport::TestCase
   end
 
   def test_api_middleware_stack
+    app.initialize!
+
     expected_middleware_stack = [
       "Rack::Sendfile",
       "ActionDispatch::Static",
