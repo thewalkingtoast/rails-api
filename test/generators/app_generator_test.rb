@@ -4,6 +4,8 @@ require 'rails-api/generators/rails/app/app_generator'
 class AppGeneratorTest < Rails::Generators::TestCase
   include GeneratorsTestHelper
 
+  tests Rails::Generators::AppGenerator
+
   arguments [destination_root]
 
   def test_skeleton_is_created

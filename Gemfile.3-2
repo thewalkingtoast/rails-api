@@ -3,6 +3,7 @@ source 'https://rubygems.org'
 gemspec
 
 gem 'rails', '~> 3.2'
+gem 'i18n',  '~> 0.6.4'
 
 platforms :mri do
   gem 'test-unit'

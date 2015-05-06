@@ -7,11 +7,6 @@ module GeneratorsTestHelper
       destination File.expand_path("../../tmp", __FILE__)
       setup    :prepare_destination
       teardown :remove_destination
-
-      begin
-        base.tests Rails::Generators.const_get(base.name.sub(/Test$/, ''))
-      rescue
-      end
     end
   end
 

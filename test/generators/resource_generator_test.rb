@@ -4,6 +4,8 @@ require 'rails/generators/rails/resource/resource_generator'
 class ResourceGeneratorTest < Rails::Generators::TestCase
   include GeneratorsTestHelper
 
+  tests Rails::Generators::ResourceGenerator
+
   arguments %w(account)
   setup :copy_routes
 
