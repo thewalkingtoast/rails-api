@@ -14,8 +14,6 @@ module Rails
       end
     end
 
-    private
-
     def setup_generators!
       generators = config.generators
 
@@ -32,6 +30,8 @@ module Rails
         :template_engine => nil
       })
     end
+
+    private
 
     ActiveSupport.on_load(:before_configuration) do
       config.api_only = true
